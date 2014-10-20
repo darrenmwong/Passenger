@@ -3,11 +3,11 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', f
     $routeProvider
 
         // home page
-        .when('/', {
+        .when('/lock', {
             templateUrl: 'views/home.html',
             controller: 'MainController'
         })
-        .when('/lock', {
+        .when('/', {
             templateUrl: 'views/lock.html',
             controller: 'LockCtrl'
         });
