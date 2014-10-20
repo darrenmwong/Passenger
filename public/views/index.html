@@ -4,24 +4,35 @@
   <meta charset="UTF-8">
   <!-- CSS -->
   <link rel="stylesheet" href="bower_components/famous-angular/dist/famous-angular.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/lock-screen.css">
+  <link rel="stylesheet" href="web-fonts/open-sans.css">
+
+  <!-- Angular In Head So It will load before html/no flash and no ng-cloak -->
+
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.7.0/underscore-min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"></script>
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-touch.min.js"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular-route.min.js"></script>
   <script type="text/javascript" src="bower_components/famous/dist/famous-global.min.js"></script>
   <script type="text/javascript" src="bower_components/famous-angular/dist/famous-angular.js"></script>
-
 </head>
 
 
 <body ng-app="famousApp">
 
-  <div ng-view ng-controller="MainController"></div>
-  we did it!
+  <div style="position: relative; width: 385px; margin: 0 auto;">
+    <img class="phone-frame" style="" src="images/iphone-5s-white-frame.png" />
+    <div class="phone-view-container" ng-view></div>
+  </div>
+
 
 
   <!-- ANGULAR CUSTOM -->
   <script type="text/javascript" src="js/app.js"></script>
   <script type="text/javascript" src="js/controllers/MainCtrl.js"></script>
   <script type="text/javascript" src="js/appRoutes.js"></script>
+  <script type="text/javascript" src="js/controllers/LockCtrl.js"></script>
 
   
 </body>
