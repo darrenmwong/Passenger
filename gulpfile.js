@@ -1,29 +1,26 @@
 // Include Gulp
 var EXPRESS_PORT = 3000;
-var gulp = require('gulp');
+var gulp = require('gulp'),
+  jshint = require('gulp-jshint'),
+  sass = require('gulp-sass'),
+  concat = require('gulp-concat'),
+  uglify = require('gulp-uglify'),
+  rename = require('gulp-rename'),
+  minifycss = require('gulp-minify-css'),
+  clean = require('gulp-clean');
 
+//Clean
+gulp.task('clean', function() {
+  return gulp.src(['dist/'], {read: false})
+  .pipe(clean());
+});
 
-//Dependecies 
-
-var jshint = require('gulp-jshint');
-var sass = require('gulp-sass');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
-var rename = require('gulp-rename');
 
 //Lint Task
 gulp.task('lint', function() {
   return gulp.src('public/js/*.js')
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
-});
-
-
-// Compile Our Sass
-gulp.task('sass', function() {
-    return gulp.src('public/scss/*.scss')
-        .pipe(sass())
-        .pipe(gulp.dest('css'));
 });
 
 // Concatenate & Minify JS
@@ -49,4 +46,4 @@ gulp.task('express', function() {
   app.use(express.static(__dirname));
   app.listen(3000);
 });
-gulp.task('default', ['express', 'lint', 'sass', 'scripts', 'watch']);
+gulp.task('default', ['express', 'lint', 'clean', 'scripts', 'watch']);
