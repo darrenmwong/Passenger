@@ -16,12 +16,59 @@ gulp.task('clean', function() {
 });
 
 
+//Build for dist
+gulp.task('build', ['clean'], function(event) {
+  var header = require('gulp-header');
+  var banner = ['/**',
+    ' * <%= pkg.name %> - <%= pkg.description %>',
+    ' * @version v<%= pkg.version %>',
+    ' * @link <%= pkg.homepage %>',
+    ' * @license <%= pkg.license %>',
+    ' */',
+    ''].join('\n');
+
+
+  // Build the CSS
+  gulp.src([
+    'public/styles/famous-angular.css'
+  ])
+  .pipe(header(banner, { pkg : pkg } ))
+  .pipe(gulp.dest('dist/'))
+  .pipe(minifycss())
+  .pipe(header(banner, { pkg : pkg } ))
+  .pipe(rename({suffix: '.min'}))
+  .pipe(gulp.dest('dist/'));
+
+
+  // Build the JS
+  return gulp.src([
+    'public/js/app.js',
+    'public/js/appRoutes.js',
+    'public/js/controllers/*.js',
+
+  ])
+  .pipe(jshint('.jshintrc'))
+  .pipe(jshint.reporter('default'))
+  .pipe(concat('famous-angular.js'))
+  .pipe(header(banner, { pkg : pkg } ))
+  .pipe(ngAnnotate())
+  .pipe(gulp.dest('dist/'))
+  .pipe(uglify())
+  .pipe(rename({suffix: '.min'}))
+  .pipe(header(banner, { pkg : pkg } ))
+  .pipe(gulp.dest('dist/'))
+  .pipe(notify({ message: 'Build task complete' }));
+});
+
+
+
 //Lint Task
 gulp.task('lint', function() {
   return gulp.src('public/js/*.js')
     .pipe(jshint())
     .pipe(jshint.reporter('default'));
 });
+
 
 // Concatenate & Minify JS
 gulp.task('scripts', function() {
@@ -46,4 +93,19 @@ gulp.task('express', function() {
   app.use(express.static(__dirname));
   app.listen(3000);
 });
-gulp.task('default', ['express', 'lint', 'clean', 'scripts', 'watch']);
+
+
+gulp.task('default', ['clean', 'build'], function(event) {
+  gulp.src([
+    'public/js/app.js',
+    'public/js/appRoutes.js',
+    'public/js/controllers/*.js',
+  ])
+  .pipe(concat('famous-angular.js'))
+  // .pipe(gulp.dest('app/bower_components/famous-angular/dist/'));
+
+  // return gulp.src('src/styles/famous-angular.css')
+  // .pipe(gulp.dest(EXAMPLES_DIR + 'app/bower_components/famous-angular/dist/'))
+  // .pipe(notify({ message: 'Build task complete' }));
+
+})
