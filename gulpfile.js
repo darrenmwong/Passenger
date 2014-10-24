@@ -1,4 +1,6 @@
 // Include Gulp
+var EXPRESS_DIR = '/';
+
 var EXPRESS_PORT = 3000;
 var gulp = require('gulp'),
   jshint = require('gulp-jshint'),
@@ -95,17 +97,45 @@ gulp.task('express', function() {
 });
 
 
-gulp.task('default', ['clean', 'build'], function(event) {
+gulp.task('build-to-examples', ['clean', 'build'], function(event) {
   gulp.src([
     'public/js/app.js',
     'public/js/appRoutes.js',
     'public/js/controllers/*.js',
   ])
   .pipe(concat('famous-angular.js'))
-  // .pipe(gulp.dest('app/bower_components/famous-angular/dist/'));
-
-  // return gulp.src('src/styles/famous-angular.css')
-  // .pipe(gulp.dest(EXAMPLES_DIR + 'app/bower_components/famous-angular/dist/'))
-  // .pipe(notify({ message: 'Build task complete' }));
+  .pipe(gulp.dest('public/bower_components/famous-angular/dist/'));
+  return gulp.src('public/styles/famous-angular.css')
+  .pipe(gulp.dest(EXPRESS_DIR + 'public/bower_components/famous-angular/dist/'))
+  .pipe(notify({ message: 'Build task complete' }));
 
 })
+
+// Watch
+gulp.task('watch-examples', function(event) {
+  var livereload = require('gulp-livereload');
+  var server = livereload();
+  // Watch .js files
+  gulp.watch([
+      'public/scripts/*/**/*.js',
+      EXPRESS_DIR + '/*'
+    ],
+    ['build-to-examples', 'build']
+  ).on('change',
+    function(file){
+      server.changed(file.path);
+    }
+  );
+});
+
+
+
+//default
+gulp.task('dev', ['build-to-examples'], function() {
+  var express = require('express');
+  var app = express();
+  app.use(require('connect-livereload')());
+  app.use(express.static(__dirname));
+  app.listen(EXPRESS_PORT);
+  gulp.start('watch-examples');
+});
