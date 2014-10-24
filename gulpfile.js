@@ -7,7 +7,11 @@ var gulp = require('gulp'),
   uglify = require('gulp-uglify'),
   rename = require('gulp-rename'),
   minifycss = require('gulp-minify-css'),
-  clean = require('gulp-clean');
+  ngAnnotate = require('gulp-ng-annotate'),
+  clean = require('gulp-clean'),
+  notify = require('gulp-notify'),
+  pkg = require('./package.json');
+
 
 //Clean
 gulp.task('clean', function() {
@@ -32,10 +36,8 @@ gulp.task('build', ['clean'], function(event) {
   gulp.src([
     'public/styles/famous-angular.css'
   ])
-  .pipe(header(banner, { pkg : pkg } ))
   .pipe(gulp.dest('dist/'))
   .pipe(minifycss())
-  .pipe(header(banner, { pkg : pkg } ))
   .pipe(rename({suffix: '.min'}))
   .pipe(gulp.dest('dist/'));
 
@@ -50,12 +52,10 @@ gulp.task('build', ['clean'], function(event) {
   .pipe(jshint('.jshintrc'))
   .pipe(jshint.reporter('default'))
   .pipe(concat('famous-angular.js'))
-  .pipe(header(banner, { pkg : pkg } ))
   .pipe(ngAnnotate())
   .pipe(gulp.dest('dist/'))
   .pipe(uglify())
   .pipe(rename({suffix: '.min'}))
-  .pipe(header(banner, { pkg : pkg } ))
   .pipe(gulp.dest('dist/'))
   .pipe(notify({ message: 'Build task complete' }));
 });
@@ -72,7 +72,7 @@ gulp.task('lint', function() {
 
 // Concatenate & Minify JS
 gulp.task('scripts', function() {
-    return gulp.src('js/*.js')
+    return gulp.src('public/js/*.js')
         .pipe(concat('all.js'))
         .pipe(gulp.dest('dist'))
         .pipe(rename('all.min.js'))
