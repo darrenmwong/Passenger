@@ -134,8 +134,9 @@ gulp.task('watch-examples', function(event) {
 gulp.task('dev', ['build-to-examples'], function() {
   var express = require('express');
   var app = express();
+  require('./app/routes')(app);
   app.use(require('connect-livereload')());
-  app.use(express.static(__dirname));
+  app.use(express.static(__dirname + '/public'));
   app.listen(EXPRESS_PORT);
   gulp.start('watch-examples');
 });
